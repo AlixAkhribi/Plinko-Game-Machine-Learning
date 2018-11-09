@@ -1,7 +1,6 @@
 // output = [dropPosition, bounciness, size, bucketLabel]
 const outputs = []
 
-const predictionPoint = 300;
 const k = 3
 
 function onScoreUpdate(dropPosition, bounciness, size, bucketLabel) {
@@ -11,11 +10,14 @@ function onScoreUpdate(dropPosition, bounciness, size, bucketLabel) {
 
 function runAnalysis() {
   // K-Nearest Neighbors algorithm with one independent variable using lodash
-  const bucket =
-    _.chain(outputs)
-      // Map returns the distance to the 300 row and the bucket number
-      .map(row => [distance(row[0]), row[3]])
-      // Sort from least to greatest by first element (distance to predictionPoint)
+  const bucket =   console.log('Your point will probably fall into', bucket);
+}
+
+function knn(data, point){
+  return _.chain(data)
+      // Map returns the distance and the bucket number
+      .map(row => [distance(row[0], point), row[3]])
+      // Sort from least to greatest
       .sortBy(row => row[0])
       // Returns array of top "k" records
       .slice(0, k)
@@ -33,11 +35,23 @@ function runAnalysis() {
       .parseInt()
       // Use .value to close our chain
       .value()
-
-  console.log('Your point will probably fall into', bucket);
 }
 
-// returns the distance from a point to the 300 row (preditionPoint)
-function distance(point) {
-  return Math.abs(point - predictionPoint)
+// returns the distance from a point a to b (preditionPoint)
+function distance(pointA, pointB) {
+  return Math.abs(pointA - pointB)
+}
+
+function splitDataSet(data, testCount) {
+  // shuffle our data
+  const shuffled = _.shuffled(data)
+
+  // Split shuffled into two sets. Test set and training set. // 
+
+  // Slice our shuffled set from 0 to test cout
+  const testSet = _.slice(shuffled, 0, testCount)
+  // Slice our shuffled set from testCount on 
+  const trainingSet = _.slice(shuffled, testCount)
+
+  return [testSet, trainingSet]
 }
